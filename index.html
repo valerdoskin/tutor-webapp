@@ -1,286 +1,133 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AI Tutor</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background: var(--tg-theme-bg-color, #ffffff);
-      color: var(--tg-theme-text-color, #000000);
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      overflow: hidden;
-    }
-    #header {
-      padding: 12px 16px;
-      background: var(--tg-theme-secondary-bg-color, #f0f0f0);
-      font-weight: 600;
-      font-size: 18px;
-      border-bottom: 1px solid var(--tg-theme-hint-color, #cccccc);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    #header span {
-      display: flex;
-      align-items: center;
-    }
-    #header .level {
-      font-size: 14px;
-      font-weight: 400;
-      color: var(--tg-theme-hint-color, #888888);
-      margin-left: 8px;
-    }
-    #chat {
-      flex: 1;
-      overflow-y: auto;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .message {
-      max-width: 85%;
-      padding: 10px 14px;
-      border-radius: 16px;
-      word-wrap: break-word;
-      line-height: 1.4;
-      animation: fadeIn 0.2s ease;
-    }
-    .message.user {
-      align-self: flex-end;
-      background: var(--tg-theme-button-color, #3390ec);
-      color: var(--tg-theme-button-text-color, #ffffff);
-      border-bottom-right-radius: 4px;
-    }
-    .message.bot {
-      align-self: flex-start;
-      background: var(--tg-theme-secondary-bg-color, #e9e9e9);
-      color: var(--tg-theme-text-color, #000000);
-      border-bottom-left-radius: 4px;
-    }
-    .message .time {
-      font-size: 10px;
-      opacity: 0.6;
-      margin-top: 4px;
-      display: block;
-      text-align: right;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    #input-area {
-      display: flex;
-      padding: 10px 12px;
-      border-top: 1px solid var(--tg-theme-hint-color, #cccccc);
-      background: var(--tg-theme-bg-color, #ffffff);
-      gap: 8px;
-      align-items: center;
-    }
-    #message-input {
-      flex: 1;
-      padding: 10px 14px;
-      border-radius: 20px;
-      border: 1px solid var(--tg-theme-hint-color, #cccccc);
-      outline: none;
-      background: var(--tg-theme-secondary-bg-color, #f5f5f5);
-      color: var(--tg-theme-text-color, #000000);
-      font-size: 16px;
-    }
-    #message-input:focus {
-      border-color: var(--tg-theme-button-color, #3390ec);
-    }
-    #send-btn {
-      background: var(--tg-theme-button-color, #3390ec);
-      color: var(--tg-theme-button-text-color, #ffffff);
-      border: none;
-      border-radius: 20px;
-      padding: 10px 18px;
-      font-size: 16px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: opacity 0.2s;
-      white-space: nowrap;
-    }
-    #send-btn:active {
-      opacity: 0.7;
-    }
-    #tabs {
-      display: flex;
-      justify-content: space-around;
-      background: var(--tg-theme-secondary-bg-color, #f0f0f0);
-      padding: 6px 0;
-      border-top: 1px solid var(--tg-theme-hint-color, #cccccc);
-    }
-    .tab {
-      background: none;
-      border: none;
-      font-size: 14px;
-      padding: 8px 12px;
-      color: var(--tg-theme-hint-color, #888888);
-      cursor: pointer;
-      transition: color 0.2s, border-bottom 0.2s;
-      font-weight: 500;
-    }
-    .tab.active {
-      color: var(--tg-theme-button-color, #3390ec);
-      border-bottom: 2px solid var(--tg-theme-button-color, #3390ec);
-    }
-    .tab-content {
-      display: none;
-      padding: 16px;
-      overflow-y: auto;
-      flex: 1;
-    }
-    .tab-content.active {
-      display: block;
-    }
-    #progress-content, #words-content, #profile-content {
-      height: calc(100vh - 130px);
-    }
-    .placeholder {
-      color: var(--tg-theme-hint-color, #888888);
-      text-align: center;
-      margin-top: 40px;
-      font-size: 16px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI Tutor</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        /* ... ваш стиль ... */
+    </style>
 </head>
 <body>
-  <div id="header">
-    <span>
-      AI Tutor
-      <span class="level" id="user-level">A2</span>
-    </span>
-    <span id="user-name">Valeriy</span>
-  </div>
+    <div id="header">
+        <span>AI Tutor <span class="level" id="user-level">A2</span></span>
+        <span id="user-name">Valeriy</span>
+    </div>
+    <div id="chat"></div>
+    <div id="input-area">
+        <input type="text" id="message-input" placeholder="Напишите сообщение..."/>
+        <button id="send-btn">Отправить</button>
+    </div>
+    <div id="tabs">
+        <button class="tab active" data-tab="chat">Главная</button>
+        <button class="tab" data-tab="progress">Прогресс</button>
+        <button class="tab" data-tab="words">Слова</button>
+        <button class="tab" data-tab="profile">Профиль</button>
+    </div>
+    <div id="progress-content" class="tab-content"><div class="placeholder">Здесь будет ваш прогресс</div></div>
+    <div id="words-content" class="tab-content"><div class="placeholder">Ваши слова появятся здесь</div></div>
+    <div id="profile-content" class="tab-content"><div class="placeholder">Информация о профиле</div></div>
 
-  <div id="chat"></div>
+    <script>
+        // Конфигурация
+        const BOT_TOKEN = '8845798286:AAFIfOcm5DIeuIxlk2IxQFUp7O4X6WyT1ag';
+        const BOT_USERNAME = 'english_tutorAI'; // замените на юзернейм вашего бота
 
-  <div id="input-area">
-    <input type="text" id="message-input" placeholder="Напишите сообщение..." />
-    <button id="send-btn">Отправить</button>
-  </div>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
 
-  <div id="tabs">
-    <button class="tab active" data-tab="chat">Главная</button>
-    <button class="tab" data-tab="progress">Прогресс</button>
-    <button class="tab" data-tab="words">Слова</button>
-    <button class="tab" data-tab="profile">Профиль</button>
-  </div>
+        const chat = document.getElementById('chat');
+        const input = document.getElementById('message-input');
+        const sendBtn = document.getElementById('send-btn');
+        const tabs = document.querySelectorAll('.tab');
+        const contents = {
+            chat: document.getElementById('chat'),
+            progress: document.getElementById('progress-content'),
+            words: document.getElementById('words-content'),
+            profile: document.getElementById('profile-content')
+        };
 
-  <!-- Скрытые вкладки -->
-  <div id="progress-content" class="tab-content">
-    <div class="placeholder">Здесь будет ваш прогресс</div>
-  </div>
-  <div id="words-content" class="tab-content">
-    <div class="placeholder">Ваши слова появятся здесь</div>
-  </div>
-  <div id="profile-content" class="tab-content">
-    <div class="placeholder">Информация о профиле</div>
-  </div>
+        function addMessage(text, isUser) {
+            const msg = document.createElement('div');
+            msg.className = `message ${isUser ? 'user' : 'bot'}`;
+            msg.textContent = text;
+            const time = document.createElement('span');
+            time.className = 'time';
+            time.textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            msg.appendChild(time);
+            chat.appendChild(msg);
+            chat.scrollTop = chat.scrollHeight;
+        }
 
-  <script>
-    // Инициализация Telegram WebApp
-    const tg = window.Telegram.WebApp;
-    tg.ready();
+        // Отправка сообщения через Bot API
+        async function sendMessageToBot(text) {
+            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+            const params = new URLSearchParams({
+                chat_id: tg.initDataUnsafe?.user?.id || 'test', // если WebApp не даёт id, можно использовать test
+                text: text
+            });
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: params
+                });
+                const data = await response.json();
+                if (data.ok) {
+                    addMessage(text, true);
+                    // Ответ бота придёт в чат Telegram, его мы не можем отобразить здесь без WebSocket
+                    // Но пользователь увидит его в основном чате.
+                } else {
+                    console.error('Ошибка отправки:', data.description);
+                }
+            } catch (e) {
+                console.error('Ошибка сети:', e);
+            }
+        }
 
-    // Получаем элементы
-    const chat = document.getElementById('chat');
-    const input = document.getElementById('message-input');
-    const sendBtn = document.getElementById('send-btn');
-    const tabs = document.querySelectorAll('.tab');
-    const contents = {
-      chat: document.getElementById('chat'),
-      progress: document.getElementById('progress-content'),
-      words: document.getElementById('words-content'),
-      profile: document.getElementById('profile-content')
-    };
-
-    // Функция добавления сообщения
-    function addMessage(text, isUser) {
-      const msg = document.createElement('div');
-      msg.className = `message ${isUser ? 'user' : 'bot'}`;
-      msg.textContent = text;
-      // Добавляем время (опционально)
-      const time = document.createElement('span');
-      time.className = 'time';
-      time.textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-      msg.appendChild(time);
-      chat.appendChild(msg);
-      chat.scrollTop = chat.scrollHeight;
-    }
-
-    // Отправка сообщения боту
-    function sendMessage(text) {
-      if (!text.trim()) return;
-      // Отправляем через tg.sendData (можно и через обычный chat, но этот способ даёт больше контроля)
-      tg.sendData(JSON.stringify({ type: 'message', text: text }));
-      addMessage(text, true);
-      input.value = '';
-    }
-
-    // Обработчики событий
-    sendBtn.addEventListener('click', () => {
-      const text = input.value.trim();
-      if (text) sendMessage(text);
-    });
-
-    input.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') sendBtn.click();
-    });
-
-    // Переключение вкладок
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        tabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        const target = tab.dataset.tab;
-        // Показываем нужную вкладку, скрываем остальные
-        Object.keys(contents).forEach(key => {
-          if (key === target) {
-            contents[key].style.display = 'flex';
-            contents[key].classList.add('active');
-          } else {
-            contents[key].style.display = 'none';
-            contents[key].classList.remove('active');
-          }
+        sendBtn.addEventListener('click', () => {
+            const text = input.value.trim();
+            if (text) {
+                sendMessageToBot(text);
+                input.value = '';
+            }
         });
-        // Если выбрали чат, показываем input-area
-        document.getElementById('input-area').style.display = (target === 'chat') ? 'flex' : 'none';
-      });
-    });
 
-    // При открытии отправляем /start
-    tg.sendData(JSON.stringify({ type: 'command', command: 'start' }));
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendBtn.click();
+        });
 
-    // Обработка ответов от бота (через события WebApp)
-    // Мы не можем получить ответы напрямую, поэтому будем полагаться на то,
-    // что бот отвечает в чат. Но мы можем слушать сообщения через Telegram WebApp?
-    // Нет, Telegram WebApp не даёт читать сообщения. Поэтому мы будем использовать
-    // другой подход: бот будет отправлять ответы в чат, а пользователь их видит.
-    // Мы можем добавить кнопку "Обновить" или просто надеяться, что бот ответит в чат.
-    // Но для демонстрации мы можем использовать polling или WebSocket, но это сложно.
-    // Самый простой способ: пользователь видит ответы бота в чате Telegram, а Mini App
-    // используется только для отправки сообщений и отображения интерфейса.
-    // Поэтому мы просто будем добавлять сообщения, когда пользователь отправляет,
-    // а ответы бота будут видны в самом чате Telegram (вне Mini App).
-    // Это не идеально, но для начала сойдёт.
+        // Переключение вкладок
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                const target = tab.dataset.tab;
+                Object.keys(contents).forEach(key => {
+                    if (key === target) {
+                        contents[key].style.display = 'flex';
+                        contents[key].classList.add('active');
+                    } else {
+                        contents[key].style.display = 'none';
+                        contents[key].classList.remove('active');
+                    }
+                });
+                document.getElementById('input-area').style.display = (target === 'chat') ? 'flex' : 'none';
+            });
+        });
 
-    // В реальном проекте мы бы использовали WebSocket или long polling для получения ответов.
-    // Но для упрощения предлагаю оставить так.
+        // При открытии отправляем /start
+        sendMessageToBot('/start');
 
-    console.log('Mini App запущен');
-  </script>
+        // Кнопка "Открыть чат" (добавьте её в интерфейс, например, в шапку)
+        const chatLink = document.createElement('a');
+        chatLink.href = `tg://resolve?domain=${BOT_USERNAME}`;
+        chatLink.textContent = 'Чат с ботом';
+        chatLink.style.cssText = 'position:fixed; bottom:60px; right:20px; background:#3390ec; color:white; padding:10px 16px; border-radius:20px; text-decoration:none; font-weight:bold;';
+        document.body.appendChild(chatLink);
+
+        console.log('Mini App запущен');
+    </script>
 </body>
 </html>
