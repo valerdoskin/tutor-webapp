@@ -5,81 +5,138 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AI Tutor</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <style>
+        /* === CSS переменные === */
+        :root {
+            --bg-primary: var(--tg-theme-bg-color, #ffffff);
+            --bg-secondary: var(--tg-theme-secondary-bg-color, #f5f5f5);
+            --bg-chat: var(--tg-theme-bg-color, #ffffff);
+            --text-primary: var(--tg-theme-text-color, #000000);
+            --text-secondary: var(--tg-theme-hint-color, #888888);
+            --accent: var(--tg-theme-button-color, #3390ec);
+            --accent-text: var(--tg-theme-button-text-color, #ffffff);
+            --shadow: 0 2px 8px rgba(0,0,0,0.08);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: var(--tg-theme-bg-color, #ffffff);
-            color: var(--tg-theme-text-color, #000000);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             display: flex;
             flex-direction: column;
             height: 100vh;
             overflow: hidden;
-            padding: 0;
-            user-select: none;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
+        /* === Header === */
         #header {
-            padding: 14px 16px 10px;
-            background: var(--tg-theme-secondary-bg-color, #f0f0f0);
-            border-bottom: 1px solid var(--tg-theme-hint-color, #cccccc);
+            padding: 16px 20px 12px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-shrink: 0;
-            min-height: 56px;
+            min-height: 64px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
         #header .title {
             font-weight: 700;
-            font-size: 20px;
+            font-size: 22px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--accent), #6c5ce7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         #header .title .level {
-            font-size: 14px;
-            font-weight: 400;
-            color: var(--tg-theme-hint-color, #888888);
-            background: var(--tg-theme-bg-color, #ffffff);
-            padding: 2px 8px;
-            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            background: var(--bg-primary);
+            padding: 2px 10px;
+            border-radius: 20px;
+            -webkit-text-fill-color: var(--text-secondary);
         }
-        #header .user-name {
+        #header .user {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        #header .user .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), #6c5ce7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            box-shadow: 0 2px 8px rgba(51, 144, 236, 0.3);
+        }
+        #header .user .name {
             font-weight: 500;
             font-size: 15px;
-            color: var(--tg-theme-text-color, #000000);
+            color: var(--text-primary);
         }
+        /* === Chat === */
         #chat {
             flex: 1;
             overflow-y: auto;
-            padding: 12px 16px;
+            padding: 16px 16px 8px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            background: var(--tg-theme-bg-color, #ffffff);
+            gap: 8px;
+            background: var(--bg-chat);
+            scroll-behavior: smooth;
+        }
+        #chat::-webkit-scrollbar {
+            width: 4px;
+        }
+        #chat::-webkit-scrollbar-thumb {
+            background: var(--text-secondary);
+            border-radius: 10px;
         }
         .message {
-            max-width: 80%;
-            padding: 8px 14px;
+            max-width: 82%;
+            padding: 10px 16px;
             border-radius: 18px;
             word-wrap: break-word;
-            line-height: 1.4;
-            animation: fadeIn 0.2s ease;
+            line-height: 1.5;
+            animation: slideIn 0.25s ease;
             align-self: flex-start;
-            background: var(--tg-theme-secondary-bg-color, #e9e9e9);
-            color: var(--tg-theme-text-color, #000000);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
             border-bottom-left-radius: 4px;
+            box-shadow: var(--shadow);
             position: relative;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            transition: all 0.2s;
         }
         .message.user {
             align-self: flex-end;
-            background: var(--tg-theme-button-color, #3390ec);
-            color: var(--tg-theme-button-text-color, #ffffff);
+            background: var(--accent);
+            color: var(--accent-text);
             border-bottom-right-radius: 4px;
+        }
+        .message .text {
+            font-size: 15px;
         }
         .message .time {
             font-size: 10px;
@@ -91,90 +148,151 @@
         .message.user .time {
             color: rgba(255,255,255,0.7);
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(4px); }
-            to { opacity: 1; transform: translateY(0); }
+        .message .avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            position: absolute;
+            bottom: -8px;
+            left: -8px;
+            border: 2px solid var(--bg-primary);
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: var(--text-secondary);
         }
+        .message.user .avatar {
+            display: none;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(8px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .typing-indicator {
+            display: none;
+            align-self: flex-start;
+            padding: 10px 16px;
+            background: var(--bg-secondary);
+            border-radius: 18px;
+            border-bottom-left-radius: 4px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            gap: 4px;
+            box-shadow: var(--shadow);
+        }
+        .typing-indicator.active {
+            display: flex;
+            align-items: center;
+        }
+        .typing-indicator .dots span {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--text-secondary);
+            margin: 0 2px;
+            animation: blink 1.4s infinite both;
+        }
+        .typing-indicator .dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator .dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes blink {
+            0%, 60%, 100% { opacity: 0.2; transform: scale(0.8); }
+            30% { opacity: 1; transform: scale(1.2); }
+        }
+        /* === Input area === */
         #input-area {
             display: flex;
-            padding: 8px 12px;
-            border-top: 1px solid var(--tg-theme-hint-color, #cccccc);
-            background: var(--tg-theme-bg-color, #ffffff);
-            gap: 8px;
+            padding: 10px 16px;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            background: var(--bg-primary);
+            gap: 10px;
             align-items: center;
             flex-shrink: 0;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
         #message-input {
             flex: 1;
-            padding: 8px 14px;
-            border-radius: 20px;
-            border: 1px solid var(--tg-theme-hint-color, #cccccc);
+            padding: 10px 16px;
+            border-radius: 24px;
+            border: 1.5px solid var(--text-secondary);
             outline: none;
-            background: var(--tg-theme-secondary-bg-color, #f5f5f5);
-            color: var(--tg-theme-text-color, #000000);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
             font-size: 16px;
-            height: 40px;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            height: 48px;
         }
         #message-input:focus {
-            border-color: var(--tg-theme-button-color, #3390ec);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(51, 144, 236, 0.15);
         }
         #send-btn {
-            background: var(--tg-theme-button-color, #3390ec);
-            color: var(--tg-theme-button-text-color, #ffffff);
+            background: var(--accent);
+            color: var(--accent-text);
             border: none;
-            border-radius: 20px;
-            padding: 0 16px;
-            height: 40px;
+            border-radius: 24px;
+            padding: 0 20px;
+            height: 48px;
             font-size: 15px;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
-            transition: opacity 0.2s;
+            transition: all 0.2s;
             white-space: nowrap;
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 6px;
+            box-shadow: 0 2px 8px rgba(51, 144, 236, 0.25);
         }
         #send-btn:active {
-            opacity: 0.7;
+            transform: scale(0.95);
+            opacity: 0.8;
         }
         #voice-btn {
-            background: var(--tg-theme-button-color, #3390ec);
-            color: var(--tg-theme-button-text-color, #ffffff);
-            border: none;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1.5px solid var(--text-secondary);
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            font-size: 18px;
+            width: 48px;
+            height: 48px;
+            font-size: 20px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
             transition: all 0.2s;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         #voice-btn:active {
-            transform: scale(0.92);
+            transform: scale(0.9);
         }
         #voice-btn.recording {
             background: #ff3b30;
+            border-color: #ff3b30;
+            color: white;
         }
+        /* === Tabs === */
         #tabs {
             display: flex;
             justify-content: space-around;
-            background: var(--tg-theme-secondary-bg-color, #f0f0f0);
-            padding: 4px 0 6px;
-            border-top: 1px solid var(--tg-theme-hint-color, #cccccc);
+            background: var(--bg-secondary);
+            padding: 6px 0 8px;
+            border-top: 1px solid rgba(0,0,0,0.05);
             flex-shrink: 0;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
         .tab {
             background: none;
             border: none;
-            font-size: 12px;
-            padding: 6px 4px;
-            color: var(--tg-theme-hint-color, #888888);
+            padding: 4px 0;
+            color: var(--text-secondary);
             cursor: pointer;
-            transition: color 0.2s, border-bottom 0.2s;
+            transition: color 0.2s;
             font-weight: 500;
             flex: 1;
             text-align: center;
@@ -182,74 +300,84 @@
             flex-direction: column;
             align-items: center;
             gap: 2px;
+            font-family: 'Inter', sans-serif;
         }
         .tab .icon {
-            font-size: 22px;
+            font-size: 24px;
             line-height: 1;
         }
         .tab .label {
             font-size: 11px;
             letter-spacing: 0.3px;
+            font-weight: 500;
         }
         .tab.active {
-            color: var(--tg-theme-button-color, #3390ec);
-            border-bottom: 2px solid var(--tg-theme-button-color, #3390ec);
+            color: var(--accent);
+        }
+        .tab.active .icon {
+            transform: scale(1.1);
         }
         .tab-content {
             display: none;
-            padding: 16px;
+            padding: 20px;
             overflow-y: auto;
             flex: 1;
-            background: var(--tg-theme-bg-color, #ffffff);
+            background: var(--bg-primary);
         }
         .tab-content.active {
             display: block;
         }
         #progress-content, #words-content, #profile-content {
-            height: calc(100vh - 140px);
+            height: calc(100vh - 160px);
         }
         .placeholder {
-            color: var(--tg-theme-hint-color, #888888);
+            color: var(--text-secondary);
             text-align: center;
-            margin-top: 40px;
+            margin-top: 60px;
             font-size: 16px;
-            line-height: 1.6;
+            line-height: 1.8;
         }
+        .placeholder .big-icon {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 16px;
+        }
+        /* === Recording indicator === */
         #recording-indicator {
             position: fixed;
-            bottom: 80px;
+            bottom: 90px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(0,0,0,0.8);
             color: white;
-            padding: 8px 20px;
-            border-radius: 20px;
+            padding: 10px 24px;
+            border-radius: 30px;
             font-size: 14px;
             display: none;
             pointer-events: none;
             z-index: 100;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
-        .typing-indicator {
-            display: none;
-            align-self: flex-start;
-            padding: 6px 12px;
-            background: var(--tg-theme-secondary-bg-color, #e9e9e9);
-            border-radius: 16px;
-            color: var(--tg-theme-hint-color, #888888);
-            font-size: 14px;
-        }
-        .typing-indicator.active {
-            display: block;
-        }
-        .typing-indicator span {
+        #recording-indicator .pulse {
             display: inline-block;
-            animation: dots 1.4s infinite;
+            width: 12px;
+            height: 12px;
+            background: #ff3b30;
+            border-radius: 50%;
+            margin-right: 10px;
+            animation: pulse 1s infinite;
         }
-        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes dots {
-            0%, 60%, 100% { opacity: 0; }
-            30% { opacity: 1; }
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.7; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(0.8); opacity: 0.7; }
+        }
+        /* === Responsive === */
+        @media (max-width: 480px) {
+            #header .title { font-size: 20px; }
+            .message { max-width: 90%; }
         }
     </style>
 </head>
@@ -259,14 +387,22 @@
             AI Tutor
             <span class="level" id="user-level">A2</span>
         </div>
-        <span class="user-name" id="user-name">Valeriy</span>
+        <div class="user">
+            <span class="name" id="user-name">Valeriy</span>
+            <div class="avatar">V</div>
+        </div>
     </div>
 
     <div id="chat">
         <div class="message bot">
-            👋 Привет! Я твой AI-тьютор.
-            Напиши что-нибудь или запиши голосовое.
+            <div class="text">👋 Привет! Я твой AI-тьютор.<br>Напиши что-нибудь или запиши голосовое.</div>
             <span class="time">только что</span>
+        </div>
+        <div class="typing-indicator" id="typing-indicator">
+            <span>Печатает</span>
+            <span class="dots">
+                <span></span><span></span><span></span>
+            </span>
         </div>
     </div>
 
@@ -296,22 +432,32 @@
     </div>
 
     <div id="progress-content" class="tab-content">
-        <div class="placeholder">📊 Ваш прогресс появится здесь</div>
+        <div class="placeholder">
+            <span class="big-icon">📊</span>
+            Ваш прогресс появится здесь
+        </div>
     </div>
     <div id="words-content" class="tab-content">
-        <div class="placeholder">📚 Ваши слова будут отображаться здесь</div>
+        <div class="placeholder">
+            <span class="big-icon">📚</span>
+            Ваши слова будут отображаться здесь
+        </div>
     </div>
     <div id="profile-content" class="tab-content">
-        <div class="placeholder">👤 Информация о профиле</div>
+        <div class="placeholder">
+            <span class="big-icon">👤</span>
+            Информация о профиле
+        </div>
     </div>
 
-    <div id="recording-indicator">🎙️ Запись...</div>
+    <div id="recording-indicator">
+        <span class="pulse"></span> Запись...
+    </div>
 
     <script>
         // Конфигурация
         const BOT_TOKEN = '8845798286:AAFIfOcm5DIeuIxlk2IxQFUp7O4X6WyT1ag';
-        const BOT_USERNAME = 'english_tutorAI';
-        const CHAT_ID = 200916160; // ваш ID, можно заменить на динамический
+        const CHAT_ID = 200916160; // замените на ваш ID или используйте динамический
 
         // Инициализация Telegram WebApp
         const tg = window.Telegram.WebApp;
@@ -324,6 +470,7 @@
         const input = document.getElementById('message-input');
         const sendBtn = document.getElementById('send-btn');
         const voiceBtn = document.getElementById('voice-btn');
+        const typingIndicator = document.getElementById('typing-indicator');
         const tabs = document.querySelectorAll('.tab');
         const contents = {
             chat: document.getElementById('chat'),
@@ -338,11 +485,14 @@
         let isRecording = false;
         let lastUpdateId = 0;
 
-        // Добавление сообщения
+        // Функции
         function addMessage(text, isUser, time) {
             const msg = document.createElement('div');
             msg.className = `message ${isUser ? 'user' : 'bot'}`;
-            msg.textContent = text;
+            const textDiv = document.createElement('div');
+            textDiv.className = 'text';
+            textDiv.innerHTML = text; // поддерживает простые теги
+            msg.appendChild(textDiv);
             const timeEl = document.createElement('span');
             timeEl.className = 'time';
             timeEl.textContent = time || new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
@@ -351,29 +501,34 @@
             chat.scrollTop = chat.scrollHeight;
         }
 
-        // Отправка текста
+        function showTyping(show) {
+            typingIndicator.classList.toggle('active', show);
+        }
+
         async function sendMessageToBot(text) {
             if (!text.trim()) return;
             const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
             const params = new URLSearchParams({ chat_id: chatId, text: text });
             try {
+                showTyping(true);
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: params
                 });
                 const data = await response.json();
+                showTyping(false);
                 if (data.ok) {
                     addMessage(text, true);
                 } else {
                     console.error('Ошибка отправки:', data.description);
                 }
             } catch (e) {
+                showTyping(false);
                 console.error('Сетевая ошибка:', e);
             }
         }
 
-        // Отправка голосового
         async function sendVoiceToBot(audioBlob) {
             const formData = new FormData();
             formData.append('chat_id', chatId);
@@ -395,7 +550,6 @@
             }
         }
 
-        // Получение обновлений (polling)
         async function fetchUpdates() {
             const url = `https://api.telegram.org/bot${BOT_TOKEN}/getUpdates?offset=${lastUpdateId + 1}&timeout=20`;
             try {
@@ -415,7 +569,7 @@
                     }
                 }
             } catch (e) {
-                // тихо игнорируем ошибки
+                // тихо игнорируем
             }
         }
 
